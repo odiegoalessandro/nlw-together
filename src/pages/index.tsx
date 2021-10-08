@@ -1,19 +1,44 @@
-import React from "react"
+import { FormEvent, useState } from "react"
 import { Flex, Image, Text, Heading, Button, Input, FormControl } from "@chakra-ui/react"
 import CustomButton from '../components/Button'
 import { useRouter } from "next/router"
 import { useAuth } from "../hooks/useAuth"
+import { database } from "../services/firebase"
 
 export default function Home() {
-  const router = useRouter()
+  const [codeRoom, setCodeRoom] = useState('')
   const { user, signInWithGoogle } = useAuth()
   
+  const router = useRouter()
+
   async function handleCreateRoom(){
     if(!user){
       await signInWithGoogle()
     }
 
     router.push('rooms/new')
+  }
+
+  async function handleJoinRoom(event: FormEvent){
+    event.preventDefault()
+
+    if(codeRoom.trim() === ""){
+      return 
+    }
+
+    const roomRef = database.ref(`rooms/${codeRoom}`).get()
+
+    if(!(await roomRef).exists()){
+      alert("Room does exists")
+      return
+    }
+
+    if((await roomRef).val()){
+      alert("Room already closed")
+      return 
+    }
+
+    router.push(`/rooms/${codeRoom}`)
   }
   
   return (
@@ -75,13 +100,22 @@ export default function Home() {
           display="flex"
           flexDir="column"
           w="auto"
+          onSubmit={handleJoinRoom}
         >
           <Input 
             type="text"
             w="sm"
             placeholder="Digite o codigo para entrar na sala"
+            value={codeRoom}
+            onChange={event => setCodeRoom(event.target.value)}
           />
-          <CustomButton>
+          <CustomButton 
+            type="submit"
+            onClick={handleJoinRoom}
+            style={{
+              marginTop: "24px"
+            }}
+          >
             Entrar na sala
           </CustomButton>
         </FormControl>

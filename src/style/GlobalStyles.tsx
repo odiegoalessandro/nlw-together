@@ -11,6 +11,9 @@ const GlobalStyles: React.FC = ({ children }) => {
       </Head>
       <CSSReset />
       <Global styles={css`
+      *:focus{
+        box-shadow: none !important;
+      }
         html {
           scroll-behavior: smooth;
         }

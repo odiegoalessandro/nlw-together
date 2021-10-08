@@ -5,6 +5,7 @@ import "firebase/compat/database"
 const firebaseConfig = {
   apiKey: "AIzaSyAo_wfklamQ51RcuyHQwyXvphC-1jbKSM0",
   authDomain: "letmeask-8ab14.firebaseapp.com",
+  databaseURL: "https://letmeask-8ab14-default-rtdb.firebaseio.com/",
   projectId: "letmeask-8ab14",
   storageBucket: "letmeask-8ab14.appspot.com",
   messagingSenderId: "695748821194",
@@ -19,8 +20,10 @@ else{
 }
 
 const auth = firebase.auth()
+const database = firebase.database()
 
 export { 
   firebase,
   auth, 
+  database
 }

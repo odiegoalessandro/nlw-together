@@ -7,10 +7,10 @@ export default styled.button`
   display: flex;
   font-weight: 500;
   color: #fff;
-  margin-top: 16px;
   justify-content: center;
   align-items: center;
   border-radius: 8px;
+  padding: 0 24px;
   img {
     margin-right: 8px;
   }

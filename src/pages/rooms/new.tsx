@@ -1,9 +1,32 @@
-import React from "react"
+import { FormEvent, useState } from "react"
 import { Flex, Image, Text, Heading, Input, FormControl, Link as ChakraLink } from "@chakra-ui/react"
 import CustomButton from "../../components/Button"
 import Link from "next/link"
+import { database } from "../../services/firebase"
+import { useAuth } from "../../hooks/useAuth"
+import { useRouter } from "next/router"
 
 export default function Room() {
+  const { user } = useAuth()
+  const [newRoom, setNewRoom] = useState('')
+  const router = useRouter()
+
+  async function handleCreateRoom(event: FormEvent){
+    event.preventDefault()
+
+    if(newRoom.trim() === ''){
+      return
+    }
+    const roomRef = database.ref("rooms")
+
+    const firebaseRoom = await roomRef.push({
+      title: newRoom,
+      authorId: user?.id,
+    })
+
+    router.push(`/rooms/${firebaseRoom.key}`)
+  }
+
   return (
     <Flex
       alignItems="stretch"
@@ -52,19 +75,28 @@ export default function Room() {
           flexDir="column"
           w="auto"
           marginTop="32px"
+          onSubmit={handleCreateRoom}
         >
           <Input 
             type="text"
             w="sm"
             placeholder="Nome da sala"
+            value={newRoom}
+            onChange={event => setNewRoom(event.target.value)}
           />
-          <CustomButton>
+          <CustomButton 
+            type="submit"
+            onClick={handleCreateRoom}
+            style={{
+              marginTop: "24px"
+            }}
+          >
             Criar sala
           </CustomButton>
         </FormControl>
         <Text color="#737380" fontWeight="500">
           Quer entrar em uma sala já existente? {" "}
-          <Link href="#">
+          <Link href="/">
             <ChakraLink textDecor="underline" color="#E559F9">
               Clique aqui
             </ChakraLink>
