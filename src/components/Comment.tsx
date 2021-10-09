@@ -1,13 +1,27 @@
-import { Flex, Text, Button, Image } from "@chakra-ui/react"
+import { Flex, Text, Image } from "@chakra-ui/react"
 import React from "react"
 
 export default function Comment({ author, content, children }){
+  let bgColor = ""
+  if(content.isHighlighted && !content.isAnswered){
+    bgColor="#f4f8ff"
+  }
+  else if(content.isAnswered){
+    bgColor="#dcddcc"
+  }
+  else{
+    bgColor="#fefefe"
+  }
+
   return(
     <Flex
       maxW="800px"
-      h="152px"
-      backgroundColor="#fefefe"
+      minH="140px"
+      maxH="auto"
+      backgroundColor={bgColor}
+      border={content.isHighlighted && !content.isAnswered ? "1px solid #835afd" : "none"}
       flexDir="column"
+      borderRadius="8px"
       p="16px"
       w="full"
       marginBottom="16px"

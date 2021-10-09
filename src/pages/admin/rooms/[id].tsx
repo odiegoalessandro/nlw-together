@@ -17,6 +17,18 @@ export default function Id({ id }){
     }
   }
 
+  async function handleHasAnswered(questionId: string){
+    await database.ref(`rooms/${id}/questions/${questionId}`).update({
+      isAnswered: true
+    })
+  }
+
+  async function handleHighlighted(questionId: string){
+    await database.ref(`rooms/${id}/questions/${questionId}`).update({
+      isHighlighted: true
+    })
+  }
+
   async function handleDeleteRoom(roomId: string){
     await database.ref(`rooms/${roomId}`).update({
       endedAt: new Date()
@@ -109,25 +121,42 @@ export default function Id({ id }){
                   author={question.author}
                   key={index} 
                 >
-                  <Button
-                    background="transparent"
-                    _hover={{}}
-                  >
-                    <Image src="/check.svg" alt="respondida" />
-                  </Button>
-                  <Button
-                    background="transparent"
-                    _hover={{}}
-                  >
-                    <Image src="/answer.svg" alt="" />
-                  </Button>
-                  <Button
-                    background="transparent"
-                    _hover={{}}
-                    onClick={() => handleDeleteQuestion(question.id)}
-                  >
-                    <Image src="/delete.svg" alt="deletar" />
-                  </Button>
+                  {
+                    question.isAnswered ? (
+                      <Button
+                        background="transparent"
+                        _hover={{}}
+                        onClick={() => handleDeleteQuestion(question.id)}
+                      >
+                        <Image src="/delete.svg" alt="deletar" />
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                            background="transparent"
+                            _hover={{}}
+                            onClick={() => handleHasAnswered(question.id)}
+                          >
+                            <Image src="/check.svg" alt="respondida" />
+                          </Button>
+                          <Button
+                            background="transparent"
+                            _hover={{}}
+                            onClick={() => handleHighlighted(question.id)}
+                          >
+                            <Image src="/answer.svg" alt="respondendo" />
+                          </Button>
+                          <Button
+                            background="transparent"
+                            _hover={{}}
+                            onClick={() => handleDeleteQuestion(question.id)}
+                          >
+                            <Image src="/delete.svg" alt="deletar" />
+                          </Button>
+                      </>
+                    )
+                  }
+
                 </Comment>
               )
             })
